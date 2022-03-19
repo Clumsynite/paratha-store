@@ -82,8 +82,7 @@
     {
       "label": "Above 15 km",
       "price": 40,
-      "range": { "min": 15 }
+      "range": { "min": 15, "max": false }
     }
-  ],
-  "cart": []
+  ]
 }
