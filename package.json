@@ -5,6 +5,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "antd": "^4.19.2",
+    "concurrently": "^7.0.0",
     "json-server": "^0.17.0",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
@@ -12,12 +13,14 @@
     "react-scripts": "5.0.0"
   },
   "scripts": {
-    "start": "json-server --watch db.json && react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "lint": "eslint ./",
     "lint-fix": "eslint ./ --fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "json-server": "json-server --watch db.json --port 5000",
+    "dev": "concurrently \"npm start\" \"npm run json-server\""
   },
   "lint-staged": {
     "*.{js,jsx}": "eslint --fix",
