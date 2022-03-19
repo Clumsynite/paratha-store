@@ -1,21 +1,54 @@
-import React, { useState } from 'react';
-import { Col, Layout, Row } from 'antd';
+/* eslint-disable no-nested-ternary */
+import React, { useState, useEffect } from 'react';
+import {
+  Col, Layout, message, Row,
+} from 'antd';
 
 import './styles/App.css';
 import Home from './Pages/Home';
-import Text from './CommonComponents/Text';
 import Checkout from './Pages/Checkout';
 import Cart from './components/Cart';
+import { getAllAddons, getAllDishes } from './api';
+import Text from './CommonComponents/Text';
+import Loading from './CommonComponents/Loading';
+import EmptyContent from './CommonComponents/EmptyContent';
 
 const { Content, Header } = Layout;
 
 function App() {
-  // const [inventory, setInventory] = useState([]);
+  const [dishes, setDishes] = useState([]);
+  const [addons, setAddons] = useState([]);
+  // const [cart, setCart] = useState([]);
   const [isCheckout] = useState(false);
   const [productsInCart, setProductsInCart] = useState([]);
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const initialise = async () => {
+    try {
+      setIsLoading(true);
+      const fetchedDishes = await getAllDishes();
+      const fetchedAddons = await getAllAddons();
+      setIsLoading(false);
+      setDishes([...fetchedDishes]);
+      setAddons([...fetchedAddons]);
+    } catch (e) {
+      setIsLoading(false);
+      setIsError(true);
+      message.error('Error Initialising app');
+    }
+  };
+
+  useEffect(() => {
+    initialise();
+  }, []);
 
   const clearCart = () => {
     setProductsInCart([]);
+  };
+
+  const onAddToCart = (item) => {
+    console.log('AAA', item);
   };
 
   return (
@@ -47,7 +80,15 @@ function App() {
           height: 'calc(100vh - 134px)',
         }}
       >
-        {isCheckout ? <Checkout /> : <Home />}
+        {isLoading ? (
+          <Loading />
+        ) : isError ? (
+          <EmptyContent label="Oops! An error occurred" />
+        ) : isCheckout ? (
+          <Checkout />
+        ) : (
+          <Home dishes={dishes} addons={addons} onAddToCart={onAddToCart} />
+        )}
       </Content>
     </Layout>
   );
