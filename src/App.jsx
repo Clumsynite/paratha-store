@@ -3,6 +3,7 @@ import { Layout } from 'antd';
 
 import './styles/App.css';
 import Home from './Pages/Home';
+import Text from './commonComponents/Text';
 
 const { Content, Header } = Layout;
 
@@ -10,9 +11,10 @@ function App() {
   return (
     <Layout className="layout">
       <Header>
-        <div style={{ color: '#fff', fontSize: 32, fontWeight: 'bold' }}>
+        <Text size={32} bold color="#fff">
           The Paratha Store
-        </div>
+
+        </Text>
       </Header>
       <Content
         style={{
