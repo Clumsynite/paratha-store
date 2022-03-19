@@ -63,7 +63,7 @@
       "price": 20
     }
   ],
-  "range": [
+  "delivery-rates": [
     {
       "label": "Upto 5 km",
       "price": 0,
