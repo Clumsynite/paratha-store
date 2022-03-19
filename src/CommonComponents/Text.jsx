@@ -23,7 +23,7 @@ export default function Text({
     <div
       style={{
         fontSize: size,
-        fontWeight: fontWeight || bold ? 'bold' : 'normal',
+        fontWeight: fontWeight || (bold ? 'bold' : 'normal'),
         ...style,
         fontStyle: italic ? 'italic' : 'normal',
         textDecoration: underline ? 'underline' : 'none',
