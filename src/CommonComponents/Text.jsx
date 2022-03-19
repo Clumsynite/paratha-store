@@ -13,7 +13,6 @@ export default function Text({
   bold,
   size = 16,
   style,
-  fontWeight,
   children,
   italic,
   underline,
@@ -23,7 +22,7 @@ export default function Text({
     <div
       style={{
         fontSize: size,
-        fontWeight: fontWeight || (bold ? 'bold' : 'normal'),
+        fontWeight: bold ? 'bold' : 'normal',
         ...style,
         fontStyle: italic ? 'italic' : 'normal',
         textDecoration: underline ? 'underline' : 'none',
@@ -39,7 +38,6 @@ Text.propTypes = {
   bold: bool,
   size: number,
   style: oneOfType([object, array]),
-  fontWeight: oneOfType([string, number]),
   children: node.isRequired,
   italic: bool,
   underline: bool,
@@ -49,7 +47,6 @@ Text.defaultProps = {
   bold: false,
   size: 16,
   style: {},
-  fontWeight: 'normal',
   italic: false,
   underline: false,
   color: '#000',
