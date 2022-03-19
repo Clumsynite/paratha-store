@@ -17,6 +17,7 @@ export default function Text({
   italic,
   underline,
   color,
+  title,
 }) {
   return (
     <div
@@ -28,6 +29,7 @@ export default function Text({
         textDecoration: underline ? 'underline' : 'none',
         color,
       }}
+      title={title}
     >
       {children}
     </div>
@@ -42,6 +44,7 @@ Text.propTypes = {
   italic: bool,
   underline: bool,
   color: string,
+  title: string,
 };
 Text.defaultProps = {
   bold: false,
@@ -50,4 +53,5 @@ Text.defaultProps = {
   italic: false,
   underline: false,
   color: '#000',
+  title: '',
 };
