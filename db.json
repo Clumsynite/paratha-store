@@ -2,31 +2,31 @@
   "dishes": [
     {
       "id": "dish-1",
-      "label": "Plain paratha + Yogurt",
+      "name": "Plain paratha + Yogurt",
       "price": 40,
       "addons": ["addon-1"]
     },
     {
       "id": "dish-2",
-      "label": "Aalo Paratha",
+      "name": "Aalo Paratha",
       "price": 50,
       "addons": ["addon-1", "addon-2", "addon-4"]
     },
     {
       "id": "dish-3",
-      "label": "Veg Paratha",
+      "name": "Veg Paratha",
       "price": 50,
       "addons": ["addon-3", "addon-4", "addon-5", "addon-4"]
     },
     {
       "id": "dish-4",
-      "label": "Double Cheese Paratha",
+      "name": "Double Cheese Paratha",
       "price": 70,
       "addons": ["addon-1", "addon-2", "addon-3"]
     },
     {
       "id": "dish-5",
-      "label": "Corn Cheese Paratha",
+      "name": "Corn Cheese Paratha",
       "price": 80,
       "addons": ["addon-1", "addon-2", "addon-4"]
     }
@@ -34,52 +34,56 @@
   "addons": [
     {
       "id": "addon-1",
-      "label": "Extra Sauce",
+      "name": "Extra Sauce",
       "price": 5
     },
     {
       "id": "addon-2",
-      "label": "Yogurt",
+      "name": "Yogurt",
       "price": 15
     },
     {
       "id": "addon-3",
-      "label": "Corn",
+      "name": "Corn",
       "price": 10
     },
     {
       "id": "addon-4",
-      "label": "Cabbage",
+      "name": "Cabbage",
       "price": 15
     },
     {
       "id": "addon-5",
-      "label": "Fenugreek",
+      "name": "Fenugreek",
       "price": 10
     },
     {
       "id": "addon-6",
-      "label": "Extra Cheese",
+      "name": "Extra Cheese",
       "price": 20
     }
   ],
   "delivery-rates": [
     {
+      "id": "rate-1",
       "label": "Upto 5 km",
       "price": 0,
       "range": { "min": 0, "max": 5 }
     },
     {
+      "id": "rate-2",
       "label": "5 - 8 km",
       "price": 15,
       "range": { "min": 5, "max": 8 }
     },
     {
+      "id": "rate-3",
       "label": "9 - 15 km",
       "price": 25,
       "range": { "min": 8, "max": 15 }
     },
     {
+      "id": "rate-4",
       "label": "Above 15 km",
       "price": 40,
       "range": { "min": 15, "max": false }
