@@ -16,7 +16,7 @@
       "id": "dish-3",
       "name": "Veg Paratha",
       "price": 50,
-      "addons": ["addon-3", "addon-4", "addon-5", "addon-4"]
+      "addons": ["addon-3", "addon-4", "addon-5", "addon-6"]
     },
     {
       "id": "dish-4",
