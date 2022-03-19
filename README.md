@@ -1,8 +1,63 @@
-# Getting Started with Create React App
+# The paratha store
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Introduction
+
+This project is built to recreate a simple checkout system with different products that have addon items and handle the checkout process with addons.
+
+## Running the project locally
+
+### install the dependencies
+
+- Yarn :
+
+  ```console
+    yarn install
+  ```
+
+- npm:
+
+  ```console
+    npm install
+  ```
+
+### Run the project
+
+This project has json-server so, you have two ways to run it.
+Either run it with the `dev` script, which runs `react-script` and `json-server` concurrently or  run it with `json-server` script which runs json-server and then run the `start` script which starts the React App.
+
+- json-server runs on  port `5000`, you can change this from `json-server` (package.json)
+
+- React app runs on port `3000`
+
+#### Dev (concurrently)
+
+Yarn:
+
+```console
+  yarn dev
+```
+
+OR
+
+Npm:
+
+```console
+  npm run dev
+```
+
+#### Separately
+
+- First,run the `json-server` script in this project's terminal
+  - npm: `npm run json-server`
+  - yarn: `yarn json-server`
+
+- Then, in another terminal run the `start` script
+  - npm: `npm run start`
+  - yarn: `yarn start`
 
 ## Available Scripts
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 In the project directory, you can run:
 
