@@ -127,14 +127,6 @@ function CartContent({
                 onRemoveFromCart={onRemoveFromCart}
               />
             ))}
-            {products.map((product) => (
-              <ProductCard
-                product={product}
-                key={JSON.stringify(product)}
-                onAddToCart={onAddToCart}
-                onRemoveFromCart={onRemoveFromCart}
-              />
-            ))}
           </div>
           <Row
             style={{
