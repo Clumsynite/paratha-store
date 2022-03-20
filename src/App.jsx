@@ -13,6 +13,7 @@ import { getAllAddons, getAllDishes } from './api';
 import Text from './CommonComponents/Text';
 import Loading from './CommonComponents/Loading';
 import EmptyContent from './CommonComponents/EmptyContent';
+import Footer from './components/Footer';
 
 const { Content, Header } = Layout;
 
@@ -155,6 +156,7 @@ function App() {
           />
         )}
       </Content>
+      <Footer />
     </Layout>
   );
 }
