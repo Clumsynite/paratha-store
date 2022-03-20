@@ -5,7 +5,7 @@ import {
   CaretUpFilled,
 } from '@ant-design/icons';
 import {
-  Button, Col, message, Row,
+  Button, Col, message, Row, Select,
 } from 'antd';
 import _ from 'lodash';
 import { func, arrayOf } from 'prop-types';
@@ -26,6 +26,7 @@ export default function Checkout({
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [productsInCart, setProductsInCart] = useState([]);
+  const [selectedDelivery, setSelectedDelivery] = useState(null);
 
   const initialise = async () => {
     try {
@@ -33,6 +34,7 @@ export default function Checkout({
       const fetchedDeliveryRanges = await getAllDeliveryRates();
       setIsLoading(false);
       setDeliveryRates([...fetchedDeliveryRanges]);
+      setSelectedDelivery(fetchedDeliveryRanges[0].id);
       const dishesInCart = cart.map((product) => {
         const dish = _.find(dishes, { id: product.dishID });
         const addonsInCart = product.addons.map((addon) => _.find(addons, { id: addon }));
@@ -44,7 +46,6 @@ export default function Checkout({
         };
       });
       setProductsInCart([...dishesInCart]);
-      console.log({ deliveryRate, productsInCart });
     } catch (e) {
       setIsLoading(false);
       setIsError(true);
@@ -55,6 +56,8 @@ export default function Checkout({
   useEffect(() => {
     initialise();
   }, []);
+
+  const getDeliveryRate = () => _.find(deliveryRate, { id: selectedDelivery }).price;
 
   return isLoading ? (
     <Loading />
@@ -148,9 +151,30 @@ export default function Checkout({
           </Col>
         </Row>
         <Row style={{ padding: '20px 0' }} align="middle">
-          <Col span={12}>
+          <Col span={8} offset={2}>
             <Text bold size={22}>
-              Delivery Charges:
+              Delivery Location:
+            </Text>
+            <Text size={10}>Select a distance for your Delivery Location</Text>
+          </Col>
+          <Col span={6}>
+            <Select
+              size="large"
+              value={selectedDelivery}
+              onChange={(value) => setSelectedDelivery(value)}
+              style={{ width: 360 }}
+              placeholder="Select a range for your Delivery Address"
+            >
+              {deliveryRate.map((rate) => (
+                <Select.Option key={rate.id} value={rate.id}>
+                  {rate.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Col>
+          <Col span={3} offset={5} style={{ textAlign: 'center' }}>
+            <Text bold size={24} underline>
+              {selectedDelivery ? `Rs. ${getDeliveryRate()}` : ' '}
             </Text>
           </Col>
         </Row>
