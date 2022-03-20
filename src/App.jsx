@@ -19,7 +19,7 @@ const { Content, Header } = Layout;
 function App() {
   const [dishes, setDishes] = useState([]);
   const [addons, setAddons] = useState([]);
-  const [isCheckout] = useState(false);
+  const [isCheckout, setIsCheckout] = useState(false);
   const [productsInCart, setProductsInCart] = useState([]);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -108,6 +108,7 @@ function App() {
               addons={addons}
               onAddToCart={onAddToCart}
               onRemoveFromCart={onRemoveFromCart}
+              onCheckout={() => setIsCheckout(true)}
             />
           </Col>
         </Row>

@@ -189,6 +189,7 @@ export default function DishCard({
                     border: '1px solid #000',
                     padding: '0 20px',
                     fontSize: 18,
+                    userSelect: 'none',
                   }}
                 >
                   {dishQuantity}
@@ -208,7 +209,6 @@ export default function DishCard({
                     wordWrap: 'break-word',
                     overflowWrap: 'break-word',
                     width: 280,
-                    userSelect: 'none',
                   }}
                 >
                   {isError}

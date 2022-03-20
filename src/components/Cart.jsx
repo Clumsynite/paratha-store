@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Badge, Col, Popover, Row,
+  Badge, Button, Col, Popover, Row,
 } from 'antd';
 import {
   ShoppingCartOutlined,
@@ -9,6 +9,7 @@ import {
   CaretUpFilled,
   MinusSquareFilled,
   PlusSquareFilled,
+  ArrowRightOutlined,
 } from '@ant-design/icons';
 import { arrayOf, func } from 'prop-types';
 import _ from 'lodash';
@@ -17,6 +18,7 @@ import {
 } from '../helper/types';
 import EmptyContent from '../CommonComponents/EmptyContent';
 import Text from '../CommonComponents/Text';
+import { getProductCost, getTotalCost } from '../helper/functions';
 
 export default function Cart({
   products,
@@ -25,6 +27,7 @@ export default function Cart({
   addons,
   onAddToCart,
   onRemoveFromCart,
+  onCheckout,
 }) {
   const [productsInCart, setProductsInCart] = useState([]);
   useEffect(() => {
@@ -50,6 +53,7 @@ export default function Cart({
           products={productsInCart}
           onAddToCart={onAddToCart}
           onRemoveFromCart={onRemoveFromCart}
+          onCheckout={onCheckout}
         />
       )}
       trigger="click"
@@ -71,6 +75,7 @@ Cart.propTypes = {
   addons: arrayOf(Addon).isRequired,
   onAddToCart: func.isRequired,
   onRemoveFromCart: func.isRequired,
+  onCheckout: func.isRequired,
 };
 
 function Title({ clearCart }) {
@@ -90,25 +95,71 @@ Title.propTypes = {
   clearCart: func.isRequired,
 };
 
-function CartContent({ products, onAddToCart, onRemoveFromCart }) {
+function CartContent({
+  products, onAddToCart, onRemoveFromCart, onCheckout,
+}) {
   return (
     <div
       style={{
         width: 360,
         height: 400,
-        overflowY: 'auto',
-        overflowX: 'hidden',
+        overflow: 'hidden',
       }}
     >
       {products.length > 0 ? (
-        products.map((product) => (
-          <ProductCard
-            product={product}
-            key={JSON.stringify(product)}
-            onAddToCart={onAddToCart}
-            onRemoveFromCart={onRemoveFromCart}
-          />
-        ))
+        <div>
+          <div style={{ height: 330, overflowY: 'auto' }}>
+            {products.map((product) => (
+              <ProductCard
+                product={product}
+                key={JSON.stringify(product)}
+                onAddToCart={onAddToCart}
+                onRemoveFromCart={onRemoveFromCart}
+              />
+            ))}
+            {products.map((product) => (
+              <ProductCard
+                product={product}
+                key={JSON.stringify(product)}
+                onAddToCart={onAddToCart}
+                onRemoveFromCart={onRemoveFromCart}
+              />
+            ))}
+          </div>
+          <Row
+            style={{
+              borderTop: '1px solid #000',
+              borderBottom: '1px solid #000',
+              padding: '4px 0',
+            }}
+          >
+            <Col offset={2} span={10} style={{ textAlign: 'right' }}>
+              <Text bold size={14}>
+                Subtotal:
+              </Text>
+            </Col>
+            <Col span={10} style={{ textAlign: 'right' }}>
+              <Text size={14} bold>
+                {`Rs. ${getTotalCost(products)}`}
+              </Text>
+            </Col>
+          </Row>
+          <Row style={{ padding: '4px 0' }} justify="center">
+            <Button
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+              type="primary"
+              onClick={onCheckout}
+            >
+              Proceed to Checkout
+              {' '}
+              <ArrowRightOutlined />
+            </Button>
+          </Row>
+        </div>
       ) : (
         <div
           style={{
@@ -128,18 +179,11 @@ CartContent.propTypes = {
   products: arrayOf(DishInCart).isRequired,
   onAddToCart: func.isRequired,
   onRemoveFromCart: func.isRequired,
+  onCheckout: func.isRequired,
 };
 
 function ProductCard({ product, onAddToCart, onRemoveFromCart }) {
   const [showAddons, setShowAddons] = useState(false);
-
-  const getProductCost = () => {
-    let total = product.price;
-    product.addons.forEach((addon) => {
-      total += addon.price;
-    });
-    return total * product.quantity;
-  };
 
   const onDecrease = () => {
     onRemoveFromCart(product.id, product.product.addons);
@@ -206,14 +250,37 @@ function ProductCard({ product, onAddToCart, onRemoveFromCart }) {
           padding: '4px 0',
         }}
       >
-        <Col offset={2} span={10} style={{ textAlign: 'right' }}>
+        <Col span={6} style={{ textAlign: 'right' }}>
           <Text bold size={12}>
             DIsh Costs:
           </Text>
         </Col>
-        <Col span={10} style={{ textAlign: 'right' }}>
+        <Col span={12}>
+          <Row align="middle" justify="center">
+            (
+            <div title="Dish Price">
+              <Text size={12} bold>
+                {`Rs. ${product.price}`}
+              </Text>
+            </div>
+            <span style={{ padding: '0 6px' }}>+</span>
+            <div title="Total Price of Addons">
+              <Text size={12} bold>
+                {`Rs. ${_.sumBy(product.addons, 'price')}`}
+              </Text>
+            </div>
+            )
+            <span style={{ padding: '0 6px' }}>*</span>
+            <div>
+              <Text size={12} bold>
+                {product.quantity}
+              </Text>
+            </div>
+          </Row>
+        </Col>
+        <Col span={4} style={{ textAlign: 'right' }}>
           <Text size={14} bold>
-            {`Rs. ${getProductCost()}`}
+            {`Rs. ${getProductCost(product)}`}
           </Text>
         </Col>
       </Row>
