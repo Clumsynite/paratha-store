@@ -5,6 +5,7 @@ import {
 } from 'antd';
 
 import './styles/App.css';
+import _ from 'lodash';
 import Home from './Pages/Home';
 import Checkout from './Pages/Checkout';
 import Cart from './components/Cart';
@@ -47,8 +48,23 @@ function App() {
     setProductsInCart([]);
   };
 
-  const onAddToCart = (item) => {
-    console.log('AAA', item);
+  const onAddToCart = (dishID, selectedAddons) => {
+    const cartID = JSON.stringify(`${dishID}${selectedAddons.sort()}`);
+    const relatedDishInCart = _.find(productsInCart, { cartID });
+    let clonedProductsInCart = [...productsInCart];
+    if (relatedDishInCart) {
+      clonedProductsInCart = _.map(clonedProductsInCart, (product) => (product.cartID === cartID
+        ? { ...product, quantity: product.quantity + 1 }
+        : product));
+    } else {
+      clonedProductsInCart.push({
+        cartID,
+        dishID,
+        quantity: 1,
+        addons: selectedAddons,
+      });
+    }
+    setProductsInCart([...clonedProductsInCart]);
   };
 
   return (
