@@ -57,7 +57,7 @@ export default function Checkout({
     initialise();
   }, []);
 
-  const getDeliveryRate = () => _.find(deliveryRate, { id: selectedDelivery }).price;
+  const getDeliveryRate = () => _.get(_.find(deliveryRate, { id: selectedDelivery }), 'price');
 
   return isLoading ? (
     <Loading />
@@ -175,6 +175,22 @@ export default function Checkout({
           <Col span={3} offset={5} style={{ textAlign: 'center' }}>
             <Text bold size={24} underline>
               {selectedDelivery ? `Rs. ${getDeliveryRate()}` : ' '}
+            </Text>
+          </Col>
+        </Row>
+
+        <Row
+          align="middle"
+          style={{ padding: '12px 0', border: '1px solid #000' }}
+        >
+          <Col span={12} offset={2}>
+            <Text bold size={24}>
+              Grand Total:
+            </Text>
+          </Col>
+          <Col span={2} offset={8}>
+            <Text bold underline size={24}>
+              {`Rs. ${getTotalCost(productsInCart) + getDeliveryRate()}`}
             </Text>
           </Col>
         </Row>
