@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button, Checkbox, Col, InputNumber, Row,
 } from 'antd';
 import { arrayOf, func } from 'prop-types';
 import _ from 'lodash';
+import { MinusSquareFilled, PlusSquareFilled } from '@ant-design/icons';
 import Text from '../CommonComponents/Text';
 import { Addon, Dish } from '../helper/types';
 import '../styles/DishCard.css';
 
 export default function DishCard({ dish, addons, onAddToCart }) {
   const { name, price, quantity } = dish;
+  const [tempQuantity, setTempQuantity] = useState(quantity || 0);
   const [dishQuantity, setDishQuantity] = useState(quantity || 0);
   const [selectedAddons, setSelectedAddons] = useState([]);
+  const [isError, setIsError] = useState(false);
+
+  const ERROR = {
+    QUANTITY: 'You can only order 25 dishes at a time',
+  };
 
   const dishAddons = addons.length > 0
     ? _.map(dish.addons, (addon) => _.find(addons, { id: addon })).filter(
@@ -19,11 +26,14 @@ export default function DishCard({ dish, addons, onAddToCart }) {
     )
     : [];
 
-  const onChange = (value) => setDishQuantity(value);
+  const onChange = (value) => setTempQuantity(value);
+  const onBlur = () => (tempQuantity < 26
+    ? setDishQuantity(tempQuantity)
+    : setIsError(ERROR.QUANTITY));
 
   const onClick = () => {
     setDishQuantity(1);
-    onAddToCart(dish, selectedAddons);
+    onAddToCart(dish.id, selectedAddons);
   };
 
   const onCheck = (e) => {
@@ -49,6 +59,36 @@ export default function DishCard({ dish, addons, onAddToCart }) {
   );
 
   const getTotalCost = () => price + getTotalAddonCost();
+
+  const onDecrease = () => {
+    if (dishQuantity > 0) {
+      setTempQuantity(dishQuantity - 1);
+      setDishQuantity(dishQuantity - 1);
+    }
+  };
+  const onIncrease = () => {
+    if (dishQuantity < 25) {
+      setTempQuantity(dishQuantity + 1);
+      setDishQuantity(dishQuantity + 1);
+    } else {
+      setIsError(ERROR.QUANTITY);
+    }
+  };
+
+  useEffect(() => {
+    if (isError) {
+      if (tempQuantity < 25) {
+        setIsError(false);
+      } else {
+        setTempQuantity(25);
+      }
+      const timeout = setTimeout(() => {
+        setIsError(false);
+      }, 3000);
+      return () => clearTimeout(timeout);
+    }
+    return () => {};
+  }, [isError, tempQuantity]);
 
   return (
     <div className="card_body">
@@ -113,12 +153,34 @@ export default function DishCard({ dish, addons, onAddToCart }) {
         </Row>
         <Row align="middle" justify="end" style={{ padding: '10px 0' }}>
           {dishQuantity > 0 ? (
-            <InputNumber
-              min={1}
-              max={100}
-              value={dishQuantity}
-              onChange={onChange}
-            />
+            <div>
+              <Row align="middle" justify="end">
+                <div style={{ padding: '0 4px' }}>
+                  <MinusSquareFilled
+                    style={{ color: '#be1826', fontSize: 34 }}
+                    onClick={onDecrease}
+                  />
+                </div>
+                <InputNumber
+                  min={1}
+                  max={100}
+                  value={tempQuantity}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                />
+                <div style={{ padding: '0 4px' }}>
+                  <PlusSquareFilled
+                    style={{ color: '#65AB0B', fontSize: 34 }}
+                    onClick={onIncrease}
+                  />
+                </div>
+              </Row>
+              {isError && (
+                <Text size={12} color="#f00">
+                  {isError}
+                </Text>
+              )}
+            </div>
           ) : (
             <Button onClick={onClick}>Add to Card</Button>
           )}
