@@ -111,17 +111,19 @@ function App() {
               alignItems: 'center',
             }}
           >
-            <Cart
-              products={productsInCart}
-              clearCart={clearCart}
-              dishes={dishes}
-              addons={addons}
-              onAddToCart={onAddToCart}
-              onRemoveFromCart={onRemoveFromCart}
-              onCheckout={onCheckout}
-              isCartVisible={isCartVisible}
-              setIsCartVisible={setIsCartVisible}
-            />
+            {!isCheckout && (
+              <Cart
+                products={productsInCart}
+                clearCart={clearCart}
+                dishes={dishes}
+                addons={addons}
+                onAddToCart={onAddToCart}
+                onRemoveFromCart={onRemoveFromCart}
+                onCheckout={onCheckout}
+                isCartVisible={isCartVisible}
+                setIsCartVisible={setIsCartVisible}
+              />
+            )}
           </Col>
         </Row>
       </Header>
@@ -137,7 +139,12 @@ function App() {
         ) : isError ? (
           <EmptyContent label="Oops! An error occurred" />
         ) : isCheckout ? (
-          <Checkout />
+          <Checkout
+            dishes={dishes}
+            addons={addons}
+            cart={productsInCart}
+            onBack={() => setIsCheckout(false)}
+          />
         ) : (
           <Home
             cart={productsInCart}
