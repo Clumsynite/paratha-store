@@ -65,7 +65,12 @@ export default function Cart({
       id="cart-popover"
       onVisibleChange={(visible) => setIsCartVisible(visible)}
     >
-      <Badge count={products.length} size="small" id="cart-badge">
+      <Badge
+        count={products.length}
+        size="small"
+        id="cart-badge"
+        style={{ marginTop: 4, marginRight: 4 }}
+      >
         <ShoppingCartOutlined
           id="cart-icon"
           style={{ fontSize: 32, color: '#fff', cursor: 'pointer' }}
