@@ -55,6 +55,45 @@ Npm:
   - npm: `npm run start`
   - yarn: `yarn start`
 
+## Screenshots
+
+### Home Page
+
+  ![Home Page](screenshots/home.png)
+
+  On this page you can see the whole list of dishes and their prices.
+  
+  You can also view what addons are available with a dish and that addon's price.
+
+### Add To Cart
+
+  ![Add to Cart](screenshots/add_to_cart.gif)
+
+  To add a dish to the cart, click on the Add to Cart button below that Dish.
+
+  Each dish with a different set of addons is a different item inside your cart.
+
+### Proceed To Checkout
+
+  ![Proceed to Checkout](screenshots/proceed_to_checkout.gif)
+
+  Click on the Cart Icon on the Top Right of your page.
+
+  You can see a list of all the dishes you've added in your cart  with their respective addons.
+
+  You can also change the quantity of that dish in your cart from the `Plus` and `Minus` Buttons.
+
+  Finally, you'll see the subtotal of your cart and a `Proceed to Checkout` button below that  list.
+  Clicking on that button will take you to the `Checkout` Page.
+
+### Checkout
+
+  ![Checkout](screenshots/finish_order.gif)
+
+  On this page you can see a table which looks similar to the one in your `Cart`. At the bottom of this page you can see a Delivery Range dropdown which adds a delivery fee to your total amount.
+
+  Below the table you can see a `Finish Order` button. Clicking on that button will take you back to the `Home` Page with an empty Cart and a message which says that your Order has been Placed with the number of Dishes you ordered
+
 ## Available Scripts
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
