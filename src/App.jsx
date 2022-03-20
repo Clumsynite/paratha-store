@@ -106,6 +106,8 @@ function App() {
               clearCart={clearCart}
               dishes={dishes}
               addons={addons}
+              onAddToCart={onAddToCart}
+              onRemoveFromCart={onRemoveFromCart}
             />
           </Col>
         </Row>

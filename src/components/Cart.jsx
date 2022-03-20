@@ -7,6 +7,8 @@ import {
   CloseOutlined,
   CaretDownFilled,
   CaretUpFilled,
+  MinusSquareFilled,
+  PlusSquareFilled,
 } from '@ant-design/icons';
 import { arrayOf, func } from 'prop-types';
 import _ from 'lodash';
@@ -17,7 +19,12 @@ import EmptyContent from '../CommonComponents/EmptyContent';
 import Text from '../CommonComponents/Text';
 
 export default function Cart({
-  products, clearCart, dishes, addons,
+  products,
+  clearCart,
+  dishes,
+  addons,
+  onAddToCart,
+  onRemoveFromCart,
 }) {
   const [productsInCart, setProductsInCart] = useState([]);
   useEffect(() => {
@@ -38,7 +45,13 @@ export default function Cart({
     <Popover
       placement="bottom"
       title={<Title clearCart={clearCart} />}
-      content={<CartContent products={productsInCart} />}
+      content={(
+        <CartContent
+          products={productsInCart}
+          onAddToCart={onAddToCart}
+          onRemoveFromCart={onRemoveFromCart}
+        />
+      )}
       trigger="click"
       arrowPointAtCenter
     >
@@ -56,6 +69,8 @@ Cart.propTypes = {
   clearCart: func.isRequired,
   dishes: arrayOf(Dish).isRequired,
   addons: arrayOf(Addon).isRequired,
+  onAddToCart: func.isRequired,
+  onRemoveFromCart: func.isRequired,
 };
 
 function Title({ clearCart }) {
@@ -75,7 +90,7 @@ Title.propTypes = {
   clearCart: func.isRequired,
 };
 
-function CartContent({ products }) {
+function CartContent({ products, onAddToCart, onRemoveFromCart }) {
   return (
     <div
       style={{
@@ -87,7 +102,12 @@ function CartContent({ products }) {
     >
       {products.length > 0 ? (
         products.map((product) => (
-          <ProductCard product={product} key={JSON.stringify(product)} />
+          <ProductCard
+            product={product}
+            key={JSON.stringify(product)}
+            onAddToCart={onAddToCart}
+            onRemoveFromCart={onRemoveFromCart}
+          />
         ))
       ) : (
         <div
@@ -106,9 +126,11 @@ function CartContent({ products }) {
 }
 CartContent.propTypes = {
   products: arrayOf(DishInCart).isRequired,
+  onAddToCart: func.isRequired,
+  onRemoveFromCart: func.isRequired,
 };
 
-function ProductCard({ product }) {
+function ProductCard({ product, onAddToCart, onRemoveFromCart }) {
   const [showAddons, setShowAddons] = useState(false);
 
   const getProductCost = () => {
@@ -116,8 +138,16 @@ function ProductCard({ product }) {
     product.addons.forEach((addon) => {
       total += addon.price;
     });
-    return total;
+    return total * product.quantity;
   };
+
+  const onDecrease = () => {
+    onRemoveFromCart(product.id, product.product.addons);
+  };
+  const onIncrease = () => {
+    onAddToCart(product.id, product.product.addons);
+  };
+
   return (
     <div>
       <Row style={{ padding: '10px 0' }} align="middle">
@@ -135,11 +165,33 @@ function ProductCard({ product }) {
           </Text>
         </Col>
         <Col span={6} style={{ textAlign: 'right' }}>
-          <Text size={12}>{`${product.quantity} x  Rs. ${product.price}`}</Text>
+          <Row align="middle" justify="center">
+            <div style={{ padding: '0 4px' }}>
+              <MinusSquareFilled
+                style={{ color: '#be1826', fontSize: 20 }}
+                onClick={onDecrease}
+              />
+            </div>
+            <div
+              style={{
+                border: '1px solid #000',
+                padding: '0 10px',
+                fontSize: 12,
+              }}
+            >
+              {product.quantity}
+            </div>
+            <div style={{ padding: '0 4px' }}>
+              <PlusSquareFilled
+                style={{ color: '#65AB0B', fontSize: 20 }}
+                onClick={onIncrease}
+              />
+            </div>
+          </Row>
         </Col>
         <Col span={4} style={{ textAlign: 'right' }}>
           <Text size={12} bold>
-            {`Rs. ${product.quantity * product.price}`}
+            {`Rs. ${product.price}`}
           </Text>
         </Col>
       </Row>
@@ -154,7 +206,7 @@ function ProductCard({ product }) {
           padding: '4px 0',
         }}
       >
-        <Col span={10} style={{ textAlign: 'right' }}>
+        <Col offset={2} span={10} style={{ textAlign: 'right' }}>
           <Text bold size={12}>
             DIsh Costs:
           </Text>
@@ -170,12 +222,14 @@ function ProductCard({ product }) {
 }
 ProductCard.propTypes = {
   product: DishInCart.isRequired,
+  onAddToCart: func.isRequired,
+  onRemoveFromCart: func.isRequired,
 };
 
 function AddonCard({ addon }) {
   return (
     <Row style={{ padding: '4px 0' }}>
-      <Col span={10}>
+      <Col span={10} offset={2}>
         <Text size={12}>{addon.name}</Text>
       </Col>
       <Col span={4} offset={8}>
