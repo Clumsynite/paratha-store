@@ -19,7 +19,6 @@ const { Content, Header } = Layout;
 function App() {
   const [dishes, setDishes] = useState([]);
   const [addons, setAddons] = useState([]);
-  // const [cart, setCart] = useState([]);
   const [isCheckout] = useState(false);
   const [productsInCart, setProductsInCart] = useState([]);
   const [isError, setIsError] = useState(false);
@@ -75,11 +74,12 @@ function App() {
       clonedProductsInCart = _.map(clonedProductsInCart, (product) => (product.cartID === cartID
         ? { ...product, quantity: product.quantity - 1 }
         : product));
-      clonedProductsInCart = _.filter(
-        clonedProductsInCart,
-        (product) => product.quantity > 0,
-      );
     }
+    clonedProductsInCart = _.filter(
+      clonedProductsInCart,
+      (product) => product.quantity > 0,
+    );
+
     setProductsInCart([...clonedProductsInCart]);
   };
 
@@ -125,6 +125,7 @@ function App() {
           <Checkout />
         ) : (
           <Home
+            cart={productsInCart}
             dishes={dishes}
             addons={addons}
             onAddToCart={onAddToCart}

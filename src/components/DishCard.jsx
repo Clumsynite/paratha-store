@@ -1,28 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Button, Checkbox, Col, InputNumber, Row,
+  Button, Checkbox, Col, Row,
 } from 'antd';
 import { arrayOf, func } from 'prop-types';
 import _ from 'lodash';
 import { MinusSquareFilled, PlusSquareFilled } from '@ant-design/icons';
 import Text from '../CommonComponents/Text';
-import { Addon, Dish } from '../helper/types';
+import { Addon, CartProduct, Dish } from '../helper/types';
 import '../styles/DishCard.css';
 
 export default function DishCard({
+  cart,
   dish,
   addons,
   onAddToCart,
   onRemoveFromCart,
 }) {
-  const { name, price, quantity } = dish;
-  const [tempQuantity, setTempQuantity] = useState(quantity || 0);
+  const { name, price } = dish;
+  const quantity = _.sumBy(cart, 'quantity');
   const [dishQuantity, setDishQuantity] = useState(quantity || 0);
   const [selectedAddons, setSelectedAddons] = useState([]);
   const [isError, setIsError] = useState(false);
+  const [refreshQuantity, setRefreshQuantity] = useState(false);
 
   const ERROR = {
     QUANTITY: 'You can only order 25 dishes at a time',
+    CART: 'This dish is in your cart with a different set of addons, CLICK again to remove it',
   };
 
   const dishAddons = addons.length > 0
@@ -31,13 +34,7 @@ export default function DishCard({
     )
     : [];
 
-  const onChange = (value) => setTempQuantity(value);
-  const onBlur = () => (tempQuantity < 26
-    ? setDishQuantity(tempQuantity)
-    : setIsError(ERROR.QUANTITY));
-
   const onClick = () => {
-    setTempQuantity(1);
     setDishQuantity(1);
     onAddToCart(dish.id, selectedAddons);
   };
@@ -68,16 +65,26 @@ export default function DishCard({
 
   const onDecrease = () => {
     if (dishQuantity > 0) {
-      setTempQuantity(dishQuantity - 1);
-      setDishQuantity(dishQuantity - 1);
-      onRemoveFromCart(dish.id, selectedAddons);
+      const cartID = JSON.stringify(`${dish.id}${selectedAddons.sort()}`);
+      const existsInCart = _.find(cart, { cartID });
+      if (existsInCart) {
+        setDishQuantity(dishQuantity - 1);
+        onRemoveFromCart(dish.id, selectedAddons);
+      } else {
+        setIsError(ERROR.CART);
+        const dishInCart = _.filter(cart, (x) => x.dishID === dish.id);
+        if (dishInCart.length > 0) {
+          setSelectedAddons(dishInCart[0].addons);
+        }
+      }
+      setRefreshQuantity(true);
     }
   };
   const onIncrease = () => {
     if (dishQuantity < 25) {
-      setTempQuantity(dishQuantity + 1);
       setDishQuantity(dishQuantity + 1);
       onAddToCart(dish.id, selectedAddons);
+      setRefreshQuantity(true);
     } else {
       setIsError(ERROR.QUANTITY);
     }
@@ -85,18 +92,26 @@ export default function DishCard({
 
   useEffect(() => {
     if (isError) {
-      if (tempQuantity < 25) {
-        setIsError(false);
-      } else {
-        setTempQuantity(25);
-      }
       const timeout = setTimeout(() => {
         setIsError(false);
       }, 3000);
       return () => clearTimeout(timeout);
     }
     return () => {};
-  }, [isError, tempQuantity]);
+  }, [isError]);
+
+  useEffect(() => {
+    if (refreshQuantity) {
+      setDishQuantity(quantity);
+      setRefreshQuantity(false);
+    }
+  }, [refreshQuantity]);
+
+  useEffect(() => {
+    if (!refreshQuantity) {
+      setRefreshQuantity(true);
+    }
+  }, [cart]);
 
   return (
     <div className="card_body">
@@ -169,13 +184,15 @@ export default function DishCard({
                     onClick={onDecrease}
                   />
                 </div>
-                <InputNumber
-                  min={1}
-                  max={100}
-                  value={tempQuantity}
-                  onChange={onChange}
-                  onBlur={onBlur}
-                />
+                <div
+                  style={{
+                    border: '1px solid #000',
+                    padding: '0 20px',
+                    fontSize: 18,
+                  }}
+                >
+                  {dishQuantity}
+                </div>
                 <div style={{ padding: '0 4px' }}>
                   <PlusSquareFilled
                     style={{ color: '#65AB0B', fontSize: 34 }}
@@ -184,9 +201,18 @@ export default function DishCard({
                 </div>
               </Row>
               {isError && (
-                <Text size={12} color="#f00">
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: '#f00',
+                    wordWrap: 'break-word',
+                    overflowWrap: 'break-word',
+                    width: 280,
+                    userSelect: 'none',
+                  }}
+                >
                   {isError}
-                </Text>
+                </div>
               )}
             </div>
           ) : (
@@ -202,4 +228,5 @@ DishCard.propTypes = {
   addons: arrayOf(Addon).isRequired,
   onAddToCart: func.isRequired,
   onRemoveFromCart: func.isRequired,
+  cart: arrayOf(CartProduct).isRequired,
 };
