@@ -20,6 +20,14 @@ This project is built to recreate a simple checkout system with different produc
     npm install
   ```
 
+### Setup .env
+
+You have a .env which needs your json-server's API URL. The `.env` should have the following variable if you haven't edited anything in `package.json`.
+
+```console
+  REACT_APP_API_URL=http://localhost:5000
+```
+
 ### Run the project
 
 This project has json-server so, you have two ways to run it.
