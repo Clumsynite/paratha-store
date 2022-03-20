@@ -67,6 +67,22 @@ function App() {
     setProductsInCart([...clonedProductsInCart]);
   };
 
+  const onRemoveFromCart = (dishID, selectedAddons) => {
+    const cartID = JSON.stringify(`${dishID}${selectedAddons.sort()}`);
+    const relatedDishInCart = _.find(productsInCart, { cartID });
+    let clonedProductsInCart = [...productsInCart];
+    if (relatedDishInCart) {
+      clonedProductsInCart = _.map(clonedProductsInCart, (product) => (product.cartID === cartID
+        ? { ...product, quantity: product.quantity - 1 }
+        : product));
+      clonedProductsInCart = _.filter(
+        clonedProductsInCart,
+        (product) => product.quantity > 0,
+      );
+    }
+    setProductsInCart([...clonedProductsInCart]);
+  };
+
   return (
     <Layout className="layout">
       <Header>
@@ -85,7 +101,12 @@ function App() {
               alignItems: 'center',
             }}
           >
-            <Cart products={productsInCart} clearCart={clearCart} />
+            <Cart
+              products={productsInCart}
+              clearCart={clearCart}
+              dishes={dishes}
+              addons={addons}
+            />
           </Col>
         </Row>
       </Header>
@@ -103,7 +124,12 @@ function App() {
         ) : isCheckout ? (
           <Checkout />
         ) : (
-          <Home dishes={dishes} addons={addons} onAddToCart={onAddToCart} />
+          <Home
+            dishes={dishes}
+            addons={addons}
+            onAddToCart={onAddToCart}
+            onRemoveFromCart={onRemoveFromCart}
+          />
         )}
       </Content>
     </Layout>

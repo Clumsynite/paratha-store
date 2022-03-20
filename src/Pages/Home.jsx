@@ -5,7 +5,12 @@ import Text from '../CommonComponents/Text';
 import DishCard from '../components/DishCard';
 import { Addon, Dish } from '../helper/types';
 
-export default function Home({ dishes, addons, onAddToCart }) {
+export default function Home({
+  dishes,
+  addons,
+  onAddToCart,
+  onRemoveFromCart,
+}) {
   return (
     <div>
       <div style={{ padding: '12px 0', borderBottom: '1px solid lightgrey' }}>
@@ -24,7 +29,13 @@ export default function Home({ dishes, addons, onAddToCart }) {
       </div>
       <Row style={{ padding: '12px 0' }}>
         {dishes.map((dish) => (
-          <DishCard key={dish.id} dish={dish} addons={addons} onAddToCart={onAddToCart} />
+          <DishCard
+            key={dish.id}
+            dish={dish}
+            addons={addons}
+            onAddToCart={onAddToCart}
+            onRemoveFromCart={onRemoveFromCart}
+          />
         ))}
       </Row>
     </div>
@@ -34,4 +45,5 @@ Home.propTypes = {
   dishes: arrayOf(Dish).isRequired,
   addons: arrayOf(Addon).isRequired,
   onAddToCart: func.isRequired,
+  onRemoveFromCart: func.isRequired,
 };

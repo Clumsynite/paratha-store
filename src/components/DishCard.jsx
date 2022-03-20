@@ -9,7 +9,12 @@ import Text from '../CommonComponents/Text';
 import { Addon, Dish } from '../helper/types';
 import '../styles/DishCard.css';
 
-export default function DishCard({ dish, addons, onAddToCart }) {
+export default function DishCard({
+  dish,
+  addons,
+  onAddToCart,
+  onRemoveFromCart,
+}) {
   const { name, price, quantity } = dish;
   const [tempQuantity, setTempQuantity] = useState(quantity || 0);
   const [dishQuantity, setDishQuantity] = useState(quantity || 0);
@@ -32,6 +37,7 @@ export default function DishCard({ dish, addons, onAddToCart }) {
     : setIsError(ERROR.QUANTITY));
 
   const onClick = () => {
+    setTempQuantity(1);
     setDishQuantity(1);
     onAddToCart(dish.id, selectedAddons);
   };
@@ -64,12 +70,14 @@ export default function DishCard({ dish, addons, onAddToCart }) {
     if (dishQuantity > 0) {
       setTempQuantity(dishQuantity - 1);
       setDishQuantity(dishQuantity - 1);
+      onRemoveFromCart(dish.id, selectedAddons);
     }
   };
   const onIncrease = () => {
     if (dishQuantity < 25) {
       setTempQuantity(dishQuantity + 1);
       setDishQuantity(dishQuantity + 1);
+      onAddToCart(dish.id, selectedAddons);
     } else {
       setIsError(ERROR.QUANTITY);
     }
@@ -193,4 +201,5 @@ DishCard.propTypes = {
   dish: Dish.isRequired,
   addons: arrayOf(Addon).isRequired,
   onAddToCart: func.isRequired,
+  onRemoveFromCart: func.isRequired,
 };
