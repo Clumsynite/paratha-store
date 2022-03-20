@@ -94,7 +94,9 @@ function App() {
     setIsCheckout(false);
     setIsCartVisible(false);
     setProductsInCart([]);
-    message.success(`Successfully Ordered ${productsInCart.length} items`);
+    message.success(
+      `Your order has been placed with ${productsInCart.length} dishes.`,
+    );
   };
 
   return (
