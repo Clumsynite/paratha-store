@@ -1,19 +1,44 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Badge, Col, Popover, Row,
 } from 'antd';
-import { ShoppingCartOutlined, CloseOutlined } from '@ant-design/icons';
+import {
+  ShoppingCartOutlined,
+  CloseOutlined,
+  CaretDownFilled,
+  CaretUpFilled,
+} from '@ant-design/icons';
 import { arrayOf, func } from 'prop-types';
-import { CartProduct } from '../helper/types';
+import _ from 'lodash';
+import {
+  Addon, CartProduct, Dish, DishInCart,
+} from '../helper/types';
 import EmptyContent from '../CommonComponents/EmptyContent';
 import Text from '../CommonComponents/Text';
 
-export default function Cart({ products, clearCart }) {
+export default function Cart({
+  products, clearCart, dishes, addons,
+}) {
+  const [productsInCart, setProductsInCart] = useState([]);
+  useEffect(() => {
+    const dishesInCart = products.map((product) => {
+      const dish = _.find(dishes, { id: product.dishID });
+      const addonsInCart = product.addons.map((addon) => _.find(addons, { id: addon }));
+      return {
+        product,
+        ...dish,
+        addons: addonsInCart,
+        quantity: product.quantity,
+      };
+    });
+    setProductsInCart([...dishesInCart]);
+  }, [products]);
+
   return (
     <Popover
       placement="bottom"
       title={<Title clearCart={clearCart} />}
-      content={<CartContent products={products} />}
+      content={<CartContent products={productsInCart} />}
       trigger="click"
       arrowPointAtCenter
     >
@@ -29,6 +54,8 @@ export default function Cart({ products, clearCart }) {
 Cart.propTypes = {
   products: arrayOf(CartProduct).isRequired,
   clearCart: func.isRequired,
+  dishes: arrayOf(Dish).isRequired,
+  addons: arrayOf(Addon).isRequired,
 };
 
 function Title({ clearCart }) {
@@ -78,12 +105,85 @@ function CartContent({ products }) {
   );
 }
 CartContent.propTypes = {
-  products: arrayOf(CartProduct).isRequired,
+  products: arrayOf(DishInCart).isRequired,
 };
 
 function ProductCard({ product }) {
-  return <Row>{product?.name}</Row>;
+  const [showAddons, setShowAddons] = useState(false);
+
+  const getProductCost = () => {
+    let total = product.price;
+    product.addons.forEach((addon) => {
+      total += addon.price;
+    });
+    return total;
+  };
+  return (
+    <div>
+      <Row style={{ padding: '10px 0' }} align="middle">
+        <Col span={2}>
+          {product.addons.length > 0
+            && (showAddons ? (
+              <CaretUpFilled onClick={() => setShowAddons(false)} />
+            ) : (
+              <CaretDownFilled onClick={() => setShowAddons(true)} />
+            ))}
+        </Col>
+        <Col span={10}>
+          <Text size={12} bold>
+            {product.name}
+          </Text>
+        </Col>
+        <Col span={6} style={{ textAlign: 'right' }}>
+          <Text size={12}>{`${product.quantity} x  Rs. ${product.price}`}</Text>
+        </Col>
+        <Col span={4} style={{ textAlign: 'right' }}>
+          <Text size={12} bold>
+            {`Rs. ${product.quantity * product.price}`}
+          </Text>
+        </Col>
+      </Row>
+      {showAddons
+        && product.addons.map((addon) => (
+          <AddonCard addon={addon} key={JSON.stringify([product, addon])} />
+        ))}
+      <Row
+        style={{
+          borderTop: '1px solid lightgray',
+          borderBottom: '1px solid #000',
+          padding: '4px 0',
+        }}
+      >
+        <Col span={10} style={{ textAlign: 'right' }}>
+          <Text bold size={12}>
+            DIsh Costs:
+          </Text>
+        </Col>
+        <Col span={10} style={{ textAlign: 'right' }}>
+          <Text size={14} bold>
+            {`Rs. ${getProductCost()}`}
+          </Text>
+        </Col>
+      </Row>
+    </div>
+  );
 }
 ProductCard.propTypes = {
-  product: CartProduct.isRequired,
+  product: DishInCart.isRequired,
+};
+
+function AddonCard({ addon }) {
+  return (
+    <Row style={{ padding: '4px 0' }}>
+      <Col span={10}>
+        <Text size={12}>{addon.name}</Text>
+      </Col>
+      <Col span={4} offset={8}>
+        <Text size={10} bold>{`Rs. ${addon.price}`}</Text>
+      </Col>
+    </Row>
+  );
+}
+AddonCard.propTypes = {
+  addon: Addon.isRequired,
 };

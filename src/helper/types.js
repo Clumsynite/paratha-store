@@ -2,14 +2,6 @@ import {
   arrayOf, number, shape, string,
 } from 'prop-types';
 
-export const CartProduct = shape({
-  id: string,
-  quantity: number,
-  name: string,
-  price: number,
-  addons: arrayOf(string),
-});
-
 export const Dish = shape({
   id: string,
   name: string,
@@ -31,4 +23,20 @@ export const DeliveryRate = shape({
     min: number,
     max: number,
   }),
+});
+
+export const CartProduct = shape({
+  cartID: string.isRequired,
+  dishID: string.isRequired,
+  quantity: number.isRequired,
+  addons: arrayOf(string),
+});
+
+export const DishInCart = shape({
+  id: string,
+  quantity: number,
+  name: string,
+  price: number,
+  addons: arrayOf(Addon),
+  product: CartProduct,
 });
