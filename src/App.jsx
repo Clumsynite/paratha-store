@@ -23,6 +23,7 @@ function App() {
   const [productsInCart, setProductsInCart] = useState([]);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCartVisible, setIsCartVisible] = useState(false);
 
   const initialise = async () => {
     try {
@@ -83,11 +84,20 @@ function App() {
     setProductsInCart([...clonedProductsInCart]);
   };
 
+  const onCheckout = () => {
+    setIsCartVisible(false);
+    setIsCheckout(true);
+  };
+
   return (
     <Layout className="layout">
       <Header>
         <Row align="middle" justify="space-between">
-          <Col span={12}>
+          <Col
+            span={12}
+            onClick={() => setIsCheckout(false)}
+            style={{ cursor: 'pointer' }}
+          >
             <Text size={32} bold color="#fff">
               The Paratha Store
             </Text>
@@ -108,7 +118,9 @@ function App() {
               addons={addons}
               onAddToCart={onAddToCart}
               onRemoveFromCart={onRemoveFromCart}
-              onCheckout={() => setIsCheckout(true)}
+              onCheckout={onCheckout}
+              isCartVisible={isCartVisible}
+              setIsCartVisible={setIsCartVisible}
             />
           </Col>
         </Row>

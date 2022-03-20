@@ -11,7 +11,7 @@ import {
   PlusSquareFilled,
   ArrowRightOutlined,
 } from '@ant-design/icons';
-import { arrayOf, func } from 'prop-types';
+import { arrayOf, func, bool } from 'prop-types';
 import _ from 'lodash';
 import {
   Addon, CartProduct, Dish, DishInCart,
@@ -28,8 +28,11 @@ export default function Cart({
   onAddToCart,
   onRemoveFromCart,
   onCheckout,
+  isCartVisible,
+  setIsCartVisible,
 }) {
   const [productsInCart, setProductsInCart] = useState([]);
+
   useEffect(() => {
     const dishesInCart = products.map((product) => {
       const dish = _.find(dishes, { id: product.dishID });
@@ -58,10 +61,15 @@ export default function Cart({
       )}
       trigger="click"
       arrowPointAtCenter
+      visible={isCartVisible}
+      id="cart-popover"
+      onVisibleChange={(visible) => setIsCartVisible(visible)}
     >
-      <Badge count={products.length} size="small">
+      <Badge count={products.length} size="small" id="cart-badge">
         <ShoppingCartOutlined
+          id="cart-icon"
           style={{ fontSize: 32, color: '#fff', cursor: 'pointer' }}
+          onClick={() => setIsCartVisible(!isCartVisible)}
         />
         <Text color="#fff">Cart</Text>
       </Badge>
@@ -76,6 +84,8 @@ Cart.propTypes = {
   onAddToCart: func.isRequired,
   onRemoveFromCart: func.isRequired,
   onCheckout: func.isRequired,
+  isCartVisible: bool.isRequired,
+  setIsCartVisible: func.isRequired,
 };
 
 function Title({ clearCart }) {
