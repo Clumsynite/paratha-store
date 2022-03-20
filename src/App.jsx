@@ -90,6 +90,13 @@ function App() {
     setIsCheckout(true);
   };
 
+  const onFinish = () => {
+    setIsCheckout(false);
+    setIsCartVisible(false);
+    setProductsInCart([]);
+    message.success(`Successfully Ordered ${productsInCart.length} items`);
+  };
+
   return (
     <Layout className="layout">
       <Header>
@@ -145,6 +152,7 @@ function App() {
             addons={addons}
             cart={productsInCart}
             onBack={() => setIsCheckout(false)}
+            onFinish={onFinish}
           />
         ) : (
           <Home

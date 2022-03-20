@@ -3,6 +3,7 @@ import {
   ArrowLeftOutlined,
   CaretDownFilled,
   CaretUpFilled,
+  ShopOutlined,
 } from '@ant-design/icons';
 import {
   Button, Col, message, Row, Select,
@@ -20,7 +21,7 @@ import {
 } from '../helper/types';
 
 export default function Checkout({
-  dishes, addons, cart, onBack,
+  dishes, addons, cart, onBack, onFinish,
 }) {
   const [deliveryRate, setDeliveryRates] = useState([]);
   const [isError, setIsError] = useState(false);
@@ -194,6 +195,21 @@ export default function Checkout({
             </Text>
           </Col>
         </Row>
+        <Row align="middle" justify="center" style={{ padding: 20 }}>
+          <Button
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+            onClick={onFinish}
+            size="large"
+          >
+            Finish Order
+            {' '}
+            <ShopOutlined />
+          </Button>
+        </Row>
       </div>
     </div>
   );
@@ -203,6 +219,7 @@ Checkout.propTypes = {
   addons: arrayOf(Addon).isRequired,
   cart: arrayOf(CartProduct).isRequired,
   onBack: func.isRequired,
+  onFinish: func.isRequired,
 };
 
 function DishCard({ dish }) {
